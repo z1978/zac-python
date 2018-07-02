@@ -1,6 +1,8 @@
 # encoding:utf-8
 import re  # 使用正则 匹配想要的数据
 import requests  # 使用requests得到网页源码
+from bs4 import BeautifulSoup
+
 # 得到主函数传入的链接
 def getHtmlText(url):
     try:  # 异常处理
@@ -19,29 +21,11 @@ def getHtmlText(url):
 def parsePage(ilt, html):
     # 异常处理
     try:
-        # 找到书包的价格
-        print("找到商品的价格")
-        matchOB = re.search('price' , html)
-        print(matchOB)
-        # パターンにマッチしたすべてをリストとして返す
-        pattern = r"price"
-        matchedList = re.findall(pattern, html)
-        if matchedList:
-            print (matchedList)
-        plt = re.findall(r'\"view_price\"\:\"[\d\.]*\"', html)
-        # 找到书包的名称
-        tlt = re.findall(r'\"raw_title\"\:\".*?\"', html)
-        # 找到书包的地址
-        add = re.findall(r'\"item_loc\"\:\".*?\"', html)
-        # 找到书包的图片链接
-        img = re.findall(r'\"pic_url\"\:\".*?\"', html)
-        # 得到这个内容放入主函数中的列表
-        for i in range(len(plt)):
-            price = eval(plt[i].split(':')[1])
-            title = eval(tlt[i].split(':')[1])
-            address = eval(add[i].split(':')[1])
-            imgs = eval(img[i].split(':')[1])
-            ilt.append([price, title, address, imgs])
+        soup = BeautifulSoup(html, 'html.parser')
+        sub_list = soup.select('span.price')
+        for sub in sub_list:
+            print('找到商品的价格')
+            print(sub.string)
     except:  # 放生异常输出空字符串
         print('')
 
@@ -60,7 +44,8 @@ def printGoodsList(ilt):
 # 定义主函数 main
 def main():
     goods = 'FR-A720-75K' # 你要搜索的东西
-    depth = 2  # 你想要得到几页的东西
+    print(goods + ' Search ...')
+    depth = 1  # 你想要得到几页的东西
     start_url = 'https://www.monotaro.com/s/?c=&q=' + goods # 你搜索的网址加上你的搜索东西
     infoList = [] # 自定义的空列表用来存放你的到的数据
     for i in range(depth): # 循环你的页数
