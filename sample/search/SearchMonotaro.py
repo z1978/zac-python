@@ -3,6 +3,24 @@ import re  # 使用正则 匹配想要的数据
 import requests  # 使用requests得到网页源码
 from bs4 import BeautifulSoup
 
+def writeData3(strings):
+    # r只读，w可写，a追加
+    with open("datas.txt", "a", encoding="utf-8") as f:
+        f.write("\n".join(strings))
+
+def writeData2():
+    strings = ["test", "string", "No.2"]
+    # r只读，w可写，a追加
+    with open("datas.txt", "a", encoding="utf-8") as f:
+        f.write("\n".join(strings))
+def writeData(data):
+    # r只读，w可写，a追加
+    file_object = open('datas.txt', 'a', encoding="utf-8")
+    try:
+        file_object.write(data +'\n')
+    finally:
+        file_object.close()
+
 # 得到主函数传入的链接
 def getHtmlText(url):
     try:  # 异常处理
@@ -19,15 +37,52 @@ def getHtmlText(url):
 
 # 解析你的网页信息
 def parsePage(ilt, html):
+    # print(html)
     # 异常处理
     try:
+        arr = []
         soup = BeautifulSoup(html, 'html.parser')
+
+        sub_list = soup.findAll("h1", {"class": "main_title"})
+        for sub in sub_list:
+            print(sub.string)
+            mydata = sub.string
+            arr.append(sub.string)
+        print('找到商品的名称')
+        # sub_list = soup.select('a.product_name')
+        # for sub in sub_list:
+        #     print(sub.string)
+        sub_list = soup.findAll("a", {"class": "product_name"})
+        for sub in sub_list:
+            print(sub.string)
+            mydata = mydata + ' ' + sub.string
+            arr.append(sub.string)
+            # writeData(sub.string)
+            # writeData("\n".join(sub.string))
+        print('==========')
+        print('找到商品的厂家')
+        sub_list = soup.select('span.brand')
+        for sub in sub_list:
+            print(sub.string)
+            # writeData(sub.string)
+            mydata = mydata + ' ' + sub.string
+            arr.append(sub.string)
+
+        print('找到商品的价格')
         sub_list = soup.select('span.price')
         for sub in sub_list:
-            print('找到商品的价格')
             print(sub.string)
+            mydata = mydata + ' ' + sub.string
+            arr.append(sub.string)
+
+        writeData(mydata)
+        # writeData(sub.string)
+        # writeData2()
+        print('==========')
+        # writeData3(arr)
+        print('==========')
     except:  # 放生异常输出空字符串
-        print('')
+        print('放生异常输出空字符串')
 
 
 # 得到主函数传入的列表
@@ -42,11 +97,12 @@ def printGoodsList(ilt):
         print(tplt.format(count, g[0], g[1], g[2]), g[3])  # 输出你得到的数据
 
 # 定义主函数 main
-def main():
-    goods = 'FR-A720-75K' # 你要搜索的东西
-    print(goods + ' Search ...')
+def serach(key):
+    # key = 'FR-A820-0.4K-1' # 你要搜索的东西
+    print(key + ' Search ...')
     depth = 1  # 你想要得到几页的东西
-    start_url = 'https://www.monotaro.com/s/?c=&q=' + goods # 你搜索的网址加上你的搜索东西
+    start_url = 'https://www.monotaro.com/s/?c=&q=' + key # 你搜索的网址加上你的搜索东西
+    print(start_url)
     infoList = [] # 自定义的空列表用来存放你的到的数据
     for i in range(depth): # 循环你的页数
         try: # 异常处理
@@ -57,6 +113,15 @@ def main():
             continue
     # 把列表中的数据放入解析的函数中
     printGoodsList(infoList)
+
+def main():
+    file_object = open('list.txt', 'rU')
+    try:
+        for line in file_object:
+            serach(line)
+    finally:
+        file_object.close()
+
 
 # 代码调试片段
 if __name__ == '__main__':
