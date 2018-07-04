@@ -6,7 +6,9 @@ from bs4 import BeautifulSoup
 def writeData3(strings):
     # r只读，w可写，a追加
     with open("datas.txt", "a", encoding="utf-8") as f:
-        f.write("\n".join(strings))
+        # f.write("\n".join(strings))
+        f.write("".join(strings))
+        f.write("\n")
 
 def writeData2():
     strings = ["test", "string", "No.2"]
@@ -45,35 +47,48 @@ def parsePage(ilt, html):
 
         sub_list = soup.findAll("h1", {"class": "main_title"})
         for sub in sub_list:
-            print(sub.string)
-            mydata = sub.string
-            arr.append(sub.string)
+            str2 = "".join(sub.string.split())#去除String中的空格/换行/回车等
+            print(str2)
+            print('==========1')
+            productName = re.findall(r"「(.+?)」", str2)
+            print(productName)
+            print('==========2')
+            productName = re.findall(r'「(.*)」', str2)
+            print(productName)
+            print('==========3')
+            print('==========4')
+            arr = arr + productName
+            mydata = productName[0]
+            arr.append(str2)
         print('找到商品的名称')
         # sub_list = soup.select('a.product_name')
         # for sub in sub_list:
         #     print(sub.string)
         sub_list = soup.findAll("a", {"class": "product_name"})
         for sub in sub_list:
-            print(sub.string)
-            mydata = mydata + ' ' + sub.string
-            arr.append(sub.string)
+            str2 = "".join(sub.string.split())#去除String中的空格/换行/回车等
+            print(str2)
+            mydata = mydata + '△' + str2
+            arr.append(str2)
             # writeData(sub.string)
             # writeData("\n".join(sub.string))
         print('==========')
         print('找到商品的厂家')
         sub_list = soup.select('span.brand')
         for sub in sub_list:
-            print(sub.string)
+            str2 = "".join(sub.string.split())#去除String中的空格/换行/回车等
+            print(str2)
             # writeData(sub.string)
-            mydata = mydata + ' ' + sub.string
-            arr.append(sub.string)
+            mydata = mydata + '△' + str2
+            arr.append(str2)
 
         print('找到商品的价格')
         sub_list = soup.select('span.price')
         for sub in sub_list:
-            print(sub.string)
-            mydata = mydata + ' ' + sub.string
-            arr.append(sub.string)
+            str2 = "".join(sub.string.split())#去除String中的空格/换行/回车等
+            print(str2)
+            mydata = mydata + '△' + str2
+            arr.append(str2)
 
         writeData(mydata)
         # writeData(sub.string)
@@ -115,7 +130,7 @@ def serach(key):
     printGoodsList(infoList)
 
 def main():
-    file_object = open('list.txt', 'rU')
+    file_object = open('list6.txt', 'rU')
     try:
         for line in file_object:
             serach(line)
