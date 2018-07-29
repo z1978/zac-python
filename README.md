@@ -16,3 +16,6 @@ pyvenv スクリプトは Python 3.6 で非推奨となり、
 代わりに python3 -m venv を使い、
 仮想環境を動かす Python インタープリタを取り違える可能性を防ぎやすくします。
 https://docs.python.jp/3/library/venv.html
+
+PyCharmによるパッケージの追加方法
+https://qiita.com/yamaAtsu/items/34e2a04408695365d586
